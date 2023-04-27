@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="map_file" default="$(find Mapping-and-Navigation-with-TurtleBot3)/maps/map.yaml" />
+    <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+
+    <arg name="rvizconfig" default="$(find Mapping-and-Navigation-with-TurtleBot3)/rviz/particle_filter.rviz" />
+    <node name="rviz" pkg="rviz" args="-d $(arg rvizconfig)" type="rviz" required="true" />
+    <!-- <node name="rviz" pkg="rviz" type="rviz" required="true" /> -->
+
+    <node pkg="tf" type="static_transform_publisher" name="map_loc_fixer"
+        args="0 0 0 0 0 0 /odom /map 100" />
+
+</launch>
