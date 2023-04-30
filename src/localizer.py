@@ -21,7 +21,7 @@ def odom_callback(botPose):
 if __name__ == '__main__':
     # --------------------------------- SETUP ------------------------------------------#
 
-    particle_count = 1000
+    particle_count = 2000
     robotPose = Odometry()
     # robotLaserScan = LaserScan()
     i = 0
