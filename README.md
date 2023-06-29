@@ -17,6 +17,7 @@ The primary objective of this project is to implement robotics concepts like map
         branch Mapping
         commit id: "roslaunch gmapping"
         commit id: "rosrun teleo_keyboard"
+        commit id: "rosrun map_server"
         checkout Localization
         commit id: "roslaunch robot_localization" tag: "halted"
         commit id: "roslaunch particle_filter"
