@@ -7,7 +7,6 @@
   <arg name="roll" default="0" />
   <arg name="pitch" default="0" />
   <arg name="yaw" default="1.57" />
-
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find Mapping-and-Navigation-with-TurtleBot3)/world/obstacles.world" />
     <arg name="paused" value="false" />
