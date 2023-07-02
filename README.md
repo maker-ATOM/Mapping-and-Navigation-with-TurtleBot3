@@ -50,14 +50,12 @@ This launched a simulation based environment where robot's data is such as joint
 - In the process of **testing the project on a different machine,** a requirement to install the TurtleBot3 packages in advance was encountered. This was due to the models such as walls, boxes being located within the TurtleBot3 package. As a solution, the models were moved inside this project and utilized the GAZEBO_MODEL_PATH environment variable to reference them.
 
 ![Axis and Grid](/images/gazebo.png)
-<div style="text-align: center; font-size: 13px;">Gazebo Simulation environment</div>
-
-<p align="center">This text will be centered</p>
+<p align="center" style="font-size: 13px;">Gazebo Simulation environment</p>
 
 <br>
 
 ![Axis and Grid](/images/gazebo_rosgraph.png)
-<font size="2"><center>Robot data published by Gazebo environment</center></font>
+<p align="center" style="font-size: 13px;">Robot data published by Gazebo environment</p>
 
 ### Mapping
 
@@ -72,12 +70,11 @@ The gmapping package open-source package that implements the Grid-based FastSLAM
 - The gmapping node is initialized with the necessary parameters, and the frame and topic were passed as arguments.
 
 ![Axis and Grid](/images/gmapping.png)
-
-<font size="2"><center>Map generation using Gmapping </center></font>
+<p align="center" style="font-size: 13px;">Map generation using Gmapping</p>
 <br>
 
 ![Axis and Grid](/images/gmapping_rosgraph.png)
-<font size="2"><center>Visualization of topic, node relation </center></font>
+<p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
 ### Localization
 
@@ -103,12 +100,12 @@ Next step towards autonomy is to localize the robot within the presaved map.
 - During the execution of the node, the pose of each particle is updated according to the robot's pose. Mathematically, the **rotational transform** is applied first, while the **translational transform** is then applied to update the position of the particle with respect to the robot's position. 
 
 ![Axis and Grid](/images/particle_filter.png)
-<font size="2"><center>Particle Filter in action</center></font>
-
+<p align="center" style="font-size: 13px;">Particle Filter in action</p>
 <br>
 
 ![Axis and Grid](/images/particlefilter_rosgraph.png)
-<font size="2"><center>Visualization of topic, node relation </center></font>
+
+<p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
 ### AMCL (Adaptive Mote-Carlo Localization)
 
@@ -128,10 +125,11 @@ It maintains a set of particles, each representing a hypothesis of the robot's p
 <img src="/images/localization.gif">
 </div>
 
-<font size="2"><center>Localization in action </center></font>
+<p align="center" style="font-size: 13px;">Localization in action</p>
 <br>
+
 ![Axis and Grid](/images/amcl_rosgraph.png)
-<font size="2"><center>Visualization of topic, node relation </center></font>
+<p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
 <!-- ### Navigation
 
@@ -150,7 +148,7 @@ Surprisingly the performance of the robot with 360 samples and 6 samples were ne
 <img src="/images/360vs6_samples.gif">
 </div>
 
-<font size="2"><center>Localization of robot with 360 and 6 samples of lidar sensor </center></font>
+<p align="center" style="font-size: 13px;">Localization of robot with 360 and 6 samples of lidar sensor</p>
 
 **Does this imples that a Lidar sensor can be swapped with few distance sensors for Swarm Robotics Application?**
 
