@@ -4,44 +4,83 @@
 The primary objective of this project is to implement robotics concepts like mapping, localization, path planning, navigation and much more while augmenting the understanding of the ROS environment.
 
 ## Status
-- At the latest particle filter, one of the methods to achieve localization is being worked upon.
-  - The current implementation generates randomized particles within predetermined boundary constraints defined by the map.
-  - The pose of each particle is continually updated relative to the robot's pose in relation to the map's origin.
+- Used gmapping package to map the environment.
+- Once mapped autonomous navigation can be performed to get the robot reach the desired position.
+- Localization can be visualizes independently using AMCL package.
 
-## FlowChart of development
+## Development process
 
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'forest', 'gitGraph': {'showBranches': true, 'mainBranchName': 'Localization'}} }%%
-      gitGraph
-        commit id: "roslaunch gazebo"
-        branch Mapping
-        commit id: "roslaunch gmapping"
-        commit id: "rosrun teleo_keyboard"
-        commit id: "rosrun map_server"
-        checkout Localization
-        commit id: "roslaunch robot_localization" tag: "halted"
-        commit id: "roslaunch particle_filter"
-        commit id: "rosrun localizer"
-        commit id: "rosrun teleop_keyboard"
+    gitGraph
+      commit id: "roslaunch gazebo"
+      branch Mapping
+      checkout Mapping
+      checkout Localization
+      commit id: "roslaunch robot_localization" tag: "halted"
+      commit id: "roslaunch particle_filter"
+      commit id: "rosrun localizer"
+      commit id: "rosrun teleop_keyboard"
+      checkout Mapping
+      branch AMCL
+      checkout AMCL
+      branch Navigation
+      checkout Navigation
+   
+      checkout Mapping
+      commit id: "roslaunch gmapping"
+      commit id: "rosrun teleo_keyboard"
+      commit id: "rosrun map_server"
+      checkout AMCL
+      commit id: "roslaunch amcl"
+      commit id: "rosrun teleop_keyboard"
+      checkout Navigation
+      commit id: "roslaunch navigation"
+      checkout Localization     
+       
 ```
 
-### Description of launch/src files
+## Description of launch/src files
 
 #### roslaunch gazebo.launch
 
+This launched a simulation based environment where robot's data is such as joint state, sensor readings and transforms are published to respective topic. While working with real life robots this data will be published by the on-board computing device located in the robot itself.
 - The launch file imports an empty world and incorporates obstacles that are defined in the "obstacles.world" file.
 - It also uses the **"spawn_model"** node, located inside the gazebo_ros package, to import the robot model of the TurtleBot3 within the Gazebo simulation environment.
 - The necessary arguments and parameters are passed to the node to ensure that the robot model is positioned correctly within the simulation environment.
 - In the process of **testing the project on a different machine,** a requirement to install the TurtleBot3 packages in advance was encountered. This was due to the models such as walls, boxes being located within the TurtleBot3 package. As a solution, the models were moved inside this project and utilized the GAZEBO_MODEL_PATH environment variable to reference them.
 
 ![Axis and Grid](/images/gazebo.png)
+<font size="2"><center>Gazebo Simulation environment</center></font>
+
+<br>
+
+![Axis and Grid](/images/gazebo_rosgraph.png)
+<font size="2"><center>Robot data published by Gazebo environment</center></font>
+
+### Mapping
+
+For a robot to autonomously move through an environment it should have a map of the environment presaved. The map defines the boundaries and relying obstacles inside the working space. 
+
+
+The gmapping package open-source package that implements the Grid-based FastSLAM algorithm for Simultaneous Localization and Mapping (SLAM).The gmapping package takes laser scan data from lidar and odometry information from the robot's motion, and generates a 2D occupancy grid map of the environment while estimating the robot's pose (position and orientation) within that map.
 
 #### roslaunch gmapping
 - The gmapping package is utilized to generate a map of the environment.
-- The **robot_state_publisher** node is launched to visualize the current position of the robot in the generated map, and to provide the transform of the base_scan to the map frame.
+- The **robot_state_publisher** node is launched to visualize the current position of the robot in the generated map, and to provide the transform of the base_scan to the map frame. It read the URDF file and publishes transforms between different frames.
 - The gmapping node is initialized with the necessary parameters, and the frame and topic were passed as arguments.
 
 ![Axis and Grid](/images/gmapping.png)
+
+<font size="2"><center>Map generation using Gmapping </center></font>
+<br>
+
+![Axis and Grid](/images/gmapping_rosgraph.png)
+<font size="2"><center>Visualization of topic, node relation </center></font>
+
+### Localization
+
+Next step towards autonomy is to localize the robot within the presaved map.
 
 #### roslaunch robot_localization
 - In the initial stages of the project, efforts were made to localize the robot within the generated map. However, upon realization that developing the particle filter from scratch would enhance the understanding of ROS, the localization efforts were suspended, and the focus was shifted to the particle filter implementation.
@@ -63,9 +102,57 @@ The primary objective of this project is to implement robotics concepts like map
 - During the execution of the node, the pose of each particle is updated according to the robot's pose. Mathematically, the **rotational transform** is applied first, while the **translational transform** is then applied to update the position of the particle with respect to the robot's position. 
 
 ![Axis and Grid](/images/particle_filter.png)
+<font size="2"><center>Particle Filter in action</center></font>
 
-## ToDo
-- TF frame attached to every single particle should be generated and LaserScan of each associated particle should be updated.
-- Once LaserScan of each particle is updated compare it with LaserScan data of robot.
-- If the LaserScan data of a particle falls within the predefined threshold, it is retained; otherwise, it is discarded.
-- Implement **adaptive mote-carlo localization** by resampling particles after each iteration and reducing the particle count accordingly.
+<br>
+
+![Axis and Grid](/images/particlefilter_rosgraph.png)
+<font size="2"><center>Visualization of topic, node relation </center></font>
+
+### AMCL (Adaptive Mote-Carlo Localization)
+
+
+AMCL is a localization package that uses a particle filter to estimate the pose of a robot in an environment. AMCL combines information from odometry and laser scans, to estimate the robot's pose with respect to a given map of the environment. 
+
+It maintains a set of particles, each representing a hypothesis of the robot's pose, and updates them based on the sensor measurements and motion model. The particles with higher weights indicate more likely robot poses. It resamples particles based on their weights to obtain a diverse set of hypotheses that represent the robot's pose distribution. The AMCL algorithm adapts the number of particles based on the quality of the localization estimate and can handle dynamic environments where the map or robot's position may change over time.
+
+
+#### roslaunch amcl
+
+- The AMCL package requires a map against which localization is performed which is provided map_server node with in the map_server package.
+- robot_state_publisher node from the package with the same name publishes robot transforms by reading the URDF description file of the robot.
+- Lastly the AMCL node is launched which performs the task of localization. Various parameters are set which are used to configure the node.
+
+<div align="center">
+<img src="/images/localization.gif">
+</div>
+
+<font size="2"><center>Localization in action </center></font>
+<br>
+![Axis and Grid](/images/amcl_rosgraph.png)
+<font size="2"><center>Visualization of topic, node relation </center></font>
+
+<!-- ### Navigation
+
+#### roslaunch navigation -->
+
+## Experimentations
+
+### 360 vs 6 Samples of Lidar Sensor
+
+A experiment was conducted to observe the effects of number of samples and the coverage area of the lidar sensor over its perception of the environment.
+Surprisingly the performance of the robot with 360 samples and 6 samples were nearly  same while needing to adjust few parameter like increasing the update rate and reducing the robot's speed.
+
+
+
+<div align="center">
+<img src="/images/360vs6_samples.gif">
+</div>
+
+<font size="2"><center>Localization of robot with 360 and 6 samples of lidar sensor </center></font>
+
+**Does this imples that a Lidar sensor can be swapped with few distance sensors for Swarm Robotics Application?**
+
+Yet to experiment on:
+- Do we really need localization for autonomous navigation?
+- Does the robot need to have a map presaved for autonomous mobility.
