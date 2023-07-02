@@ -52,6 +52,8 @@ This launched a simulation based environment where robot's data is such as joint
 ![Axis and Grid](/images/gazebo.png)
 <div style="text-align: center; font-size: 13px;">Gazebo Simulation environment</div>
 
+<p align="center">This text will be centered</p>
+
 <br>
 
 ![Axis and Grid](/images/gazebo_rosgraph.png)
