@@ -10,7 +10,7 @@ The primary objective of this project is to implement robotics concepts like map
 
 ## Development process
 
-```mermaid
+<!-- ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'forest', 'gitGraph': {'showBranches': true, 'mainBranchName': 'Localization'}} }%%
     gitGraph
       commit id: "roslaunch gazebo"
@@ -26,7 +26,6 @@ The primary objective of this project is to implement robotics concepts like map
       checkout AMCL
       branch Navigation
       checkout Navigation
-   
       checkout Mapping
       commit id: "roslaunch gmapping"
       commit id: "rosrun teleo_keyboard"
@@ -36,9 +35,9 @@ The primary objective of this project is to implement robotics concepts like map
       commit id: "rosrun teleop_keyboard"
       checkout Navigation
       commit id: "roslaunch navigation"
-      checkout Localization     
-       
-```
+      checkout Localization          
+``` -->
+![Axis and Grid](/images/GitGraph.png)
 
 ## Description of launch/src files
 
