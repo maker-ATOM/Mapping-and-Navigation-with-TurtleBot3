@@ -50,7 +50,7 @@ This launched a simulation based environment where robot's data is such as joint
 - In the process of **testing the project on a different machine,** a requirement to install the TurtleBot3 packages in advance was encountered. This was due to the models such as walls, boxes being located within the TurtleBot3 package. As a solution, the models were moved inside this project and utilized the GAZEBO_MODEL_PATH environment variable to reference them.
 
 ![Axis and Grid](/images/gazebo.png)
-<font size="2"><center>Gazebo Simulation environment</center></font>
+<div style="text-align: center; font-size: 13px;">Gazebo Simulation environment</div>
 
 <br>
 
