@@ -1,0 +1,14 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="burger" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- AMCL -->
+  <include file="$(find Mapping-and-Navigation-with-TurtleBot3)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find Mapping-and-Navigation-with-TurtleBot3)/launch/move_base.launch">
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+</launch>

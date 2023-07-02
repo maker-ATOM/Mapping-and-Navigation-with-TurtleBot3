@@ -1,0 +1,59 @@
+<launch>
+
+  <!-- Map server -->
+  <arg name="map_file" default="$(find Mapping-and-Navigation-with-TurtleBot3)/maps/map.yaml" />
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- Rviz -->
+  <node pkg="rviz" type="rviz" name="rviz" required="true"
+  args="-d $(find Mapping-and-Navigation-with-TurtleBot3)/rviz/localization.rviz" />
+
+  <!-- Turtlebot3 -->
+  <arg name="multi_robot_name" default=""/>
+
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" value="$(arg multi_robot_name)"/>
+  </node>
+
+
+  <!-- AMCL -->
+  <node pkg="amcl" type="amcl" name="amcl">
+
+    <param name="min_particles" value="100" />
+    <param name="max_particles" value="3000" />
+    <param name="kld_err" value="0.02" />
+    <param name="update_min_d" value="0.10" />
+    <param name="update_min_a" value="0.10" />
+    <param name="resample_interval" value="1" />
+    <param name="transform_tolerance" value="0.5" />
+    <param name="recovery_alpha_slow" value="0.00" />
+    <param name="recovery_alpha_fast" value="0.00" />
+    <param name="initial_pose_x" value="0" />
+    <param name="initial_pose_y" value="-1" />
+    <param name="initial_pose_a" value="0" />
+    <param name="gui_publish_rate" value="50.0" />
+
+    <remap from="scan" to="/scan" />
+    <param name="laser_max_range" value="3.5" />
+    <param name="laser_max_beams" value="180" />
+    <param name="laser_z_hit" value="0.5" />
+    <param name="laser_z_short" value="0.05" />
+    <param name="laser_z_max" value="0.05" />
+    <param name="laser_z_rand" value="0.5" />
+    <param name="laser_sigma_hit" value="0.2" />
+    <param name="laser_lambda_short" value="0.1" />
+    <param name="laser_likelihood_max_dist" value="2.0" />
+    <param name="laser_model_type" value="likelihood_field" />
+
+    <param name="odom_model_type" value="diff" />
+    <param name="odom_alpha1" value="0.1" />
+    <param name="odom_alpha2" value="0.1" />
+    <param name="odom_alpha3" value="0.1" />
+    <param name="odom_alpha4" value="0.1" />
+    <param name="odom_frame_id" value="odom" />
+    <param name="base_frame_id" value="base_footprint" />
+
+  </node>
+</launch>
