@@ -44,7 +44,7 @@ The primary objective of this project is to implement robotics concepts like map
 
 #### roslaunch gazebo.launch
 
-This launched a simulation based environment where robot's data is such as joint state, sensor readings and transforms are published to respective topic. While working with real life robots this data will be published by the on-board computing device located in the robot itself.
+This launched a simulation based environment where robot's data such as joint state, sensor readings and transforms are published to respective topic. While working with real life robots this data will be published by the on-board computing device located in the robot itself.
 - The launch file imports an empty world and incorporates obstacles that are defined in the "obstacles.world" file.
 - It also uses the **"spawn_model"** node, located inside the gazebo_ros package, to import the robot model of the TurtleBot3 within the Gazebo simulation environment.
 - The necessary arguments and parameters are passed to the node to ensure that the robot model is positioned correctly within the simulation environment.
@@ -60,10 +60,10 @@ This launched a simulation based environment where robot's data is such as joint
 
 ### Mapping
 
-For a robot to autonomously move through an environment it should have a map of the environment presaved. The map defines the boundaries and relying obstacles inside the working space. 
+For a robot to autonomously move through an environment it should have a map of the environment presaved. The map defines the boundaries and obstacles inside the working space. 
 
 
-The gmapping package open-source package that implements the Grid-based FastSLAM algorithm for Simultaneous Localization and Mapping (SLAM).The gmapping package takes laser scan data from lidar and odometry information from the robot's motion, and generates a 2D occupancy grid map of the environment while estimating the robot's pose (position and orientation) within that map.
+Gmapping is a open-source package that implements Grid-based FastSLAM algorithm for Simultaneous Localization and Mapping (SLAM).The gmapping package takes laser scan data from lidar and odometry information from the robot's motion, and generates a 2D occupancy grid map of the environment while estimating the robot's pose (position and orientation) within that map.
 
 #### roslaunch gmapping
 - The gmapping package is utilized to generate a map of the environment.
@@ -117,7 +117,7 @@ It maintains a set of particles, each representing a hypothesis of the robot's p
 
 #### roslaunch amcl
 
-- The AMCL package requires a map against which localization is performed which is provided map_server node with in the map_server package.
+- The AMCL package requires a map against which localization is performed which is provided map_server node within the map_server package.
 - robot_state_publisher node from the package with the same name publishes robot transforms by reading the URDF description file of the robot.
 - Lastly the AMCL node is launched which performs the task of localization. Various parameters are set which are used to configure the node.
 
