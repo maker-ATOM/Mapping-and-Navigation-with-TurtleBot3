@@ -35,6 +35,7 @@ The primary objective of this project is to implement robotics concepts like map
       commit id: "rosrun teleop_keyboard"
       checkout Navigation
       commit id: "roslaunch navigation"
+      commit id: "rosrun initialPose"
       checkout Localization          
 ``` -->
 ![Axis and Grid](/images/GitGraph.png)
@@ -49,12 +50,12 @@ This launched a simulation based environment where robot's data is such as joint
 - The necessary arguments and parameters are passed to the node to ensure that the robot model is positioned correctly within the simulation environment.
 - In the process of **testing the project on a different machine,** a requirement to install the TurtleBot3 packages in advance was encountered. This was due to the models such as walls, boxes being located within the TurtleBot3 package. As a solution, the models were moved inside this project and utilized the GAZEBO_MODEL_PATH environment variable to reference them.
 
-![Axis and Grid](/images/gazebo.png)
+![gazebo](/images/gazebo.png)
 <p align="center" style="font-size: 13px;">Gazebo Simulation environment</p>
 
 <br>
 
-![Axis and Grid](/images/gazebo_rosgraph.png)
+![gazebo_rosgraph](/images/gazebo_rosgraph.png)
 <p align="center" style="font-size: 13px;">Robot data published by Gazebo environment</p>
 
 ### Mapping
@@ -69,11 +70,11 @@ The gmapping package open-source package that implements the Grid-based FastSLAM
 - The **robot_state_publisher** node is launched to visualize the current position of the robot in the generated map, and to provide the transform of the base_scan to the map frame. It read the URDF file and publishes transforms between different frames.
 - The gmapping node is initialized with the necessary parameters, and the frame and topic were passed as arguments.
 
-![Axis and Grid](/images/gmapping.png)
+![gmapping](/images/gmapping.png)
 <p align="center" style="font-size: 13px;">Map generation using Gmapping</p>
 <br>
 
-![Axis and Grid](/images/gmapping_rosgraph.png)
+![gmapping_rosgraph](/images/gmapping_rosgraph.png)
 <p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
 ### Localization
@@ -99,16 +100,15 @@ Next step towards autonomy is to localize the robot within the presaved map.
 - The publishing rate is then set to 50 Hz, and a second delay is given until the system stabilizes.
 - During the execution of the node, the pose of each particle is updated according to the robot's pose. Mathematically, the **rotational transform** is applied first, while the **translational transform** is then applied to update the position of the particle with respect to the robot's position. 
 
-![Axis and Grid](/images/particle_filter.png)
+![particle_filter](/images/particle_filter.png)
 <p align="center" style="font-size: 13px;">Particle Filter in action</p>
 <br>
 
-![Axis and Grid](/images/particlefilter_rosgraph.png)
+![particlefilter_rosgraph](/images/particlefilter_rosgraph.png)
 
 <p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
 ### AMCL (Adaptive Mote-Carlo Localization)
-
 
 AMCL is a localization package that uses a particle filter to estimate the pose of a robot in an environment. AMCL combines information from odometry and laser scans, to estimate the robot's pose with respect to a given map of the environment. 
 
@@ -128,12 +128,50 @@ It maintains a set of particles, each representing a hypothesis of the robot's p
 <p align="center" style="font-size: 13px;">Localization in action</p>
 <br>
 
-![Axis and Grid](/images/amcl_rosgraph.png)
+![amcl_rosgraph](/images/amcl_rosgraph.png)
 <p align="center" style="font-size: 13px;">Visualization of topic, node relation</p>
 
-<!-- ### Navigation
+### Navigation
 
-#### roslaunch navigation -->
+Autonomous navigation is the process to plan and execute a path in an given or unknown environment to reach a desired destination. Navigation is bigger picture which can be achieved using perception, mapping, localization, path planning, and control modules.
+
+#### roslaunch navigation
+
+Once the gazebo simulation is up, the navigation launch files launches another two launch files.
+- First is the AMCL launch files which is used to localize to the robot in the map provided by the map_server. This is the same launch file used in AMCL section.
+- The seconds file is the move_base which actually is a part of the ROS Navigation Stack. The move is responsible for planning and controlling the motor of the robot to reach the specified destination.The move_base package combines several components to achieve autonomous navigation. 
+  - Global planner which uses **Dijkstra's algorithm** to generate a high level global plan.
+  - Local planner which uses **Dynamic Window Approach** to performs tasks such as obstacles avoidance and generates the velocity commands to follow the global plan.
+  - Costmap is a representation of the environment as a grid map with different cost values assigned to different areas, used by the planners to make decisions about path planning and obstacle avoidance.
+
+
+![navigation](/images/navigation.gif)
+<p align="center" style="font-size: 13px;">Autonomous navigation of TurtleBot3</p>
+
+<br>
+
+![navigation_all_topics](/images/navigation_all_topics.png)
+<p align="center" style="font-size: 13px;">Visualization of all active topic, node relation</p>
+<br>
+
+![navigation_nodes_only](/images/navigation_nodes_only.png)
+
+<p align="center" style="font-size: 13px;">Visualization of inter-node relation</p>
+
+
+#### rosrun initialPose
+
+- The AMCL node needs to know the initial Pose of the robot for the robot to localize, this can be done by publishing to the topic **/initialpose**.
+- This script instead of running several times execute only onces. First it waits for message to publish on **/odom** topic, which is the position of the robot from the origin of the map. After reception of the message secondary felids such as frame_id and covariance matrix is attached and the message is published to the initialpose topic. 
+
+![initialPose](/images/initialPose.gif)
+<p align="center" style="font-size: 13px;">Publishment to topic initialpose</p>
+
+
+#### Todo
+- Drive the robot until robot is localized within the threshold limit. This function can be added with the initialPose node.
+- Publish goalPosition on topic /move_base_simple/Goal, once reached publish another Goal Position, use PID controller to check for position validity.
+- Perform same task of getting the robot reach a specific task but this time use rosservices to check if the robot has reached the position or not.
 
 ## Experimentations
 
@@ -155,3 +193,5 @@ Surprisingly the performance of the robot with 360 samples and 6 samples were ne
 Yet to experiment on:
 - Do we really need localization for autonomous navigation?
 - Does the robot need to have a map presaved for autonomous mobility.
+- Navigation but the map is provided by gmapping package.
+- Mapping and navigation using camera instead of lidar?
