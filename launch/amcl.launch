@@ -6,7 +6,7 @@
 
   <!-- Rviz -->
   <node pkg="rviz" type="rviz" name="rviz" required="true"
-  args="-d $(find Mapping-and-Navigation-with-TurtleBot3)/rviz/localization.rviz" />
+  args="-d $(find Mapping-and-Navigation-with-TurtleBot3)/rviz/navigation.rviz" />
 
   <!-- Turtlebot3 -->
   <arg name="multi_robot_name" default=""/>
@@ -31,7 +31,7 @@
     <param name="recovery_alpha_slow" value="0.00" />
     <param name="recovery_alpha_fast" value="0.00" />
     <param name="initial_pose_x" value="0" />
-    <param name="initial_pose_y" value="-1" />
+    <param name="initial_pose_y" value="0" />
     <param name="initial_pose_a" value="0" />
     <param name="gui_publish_rate" value="50.0" />
 
